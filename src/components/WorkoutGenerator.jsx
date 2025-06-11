@@ -2,7 +2,6 @@ import { useState } from "react";
 import axios from "axios";
 
 export const WorkoutGenerator = ({ user }) => {
-  const [workoutPlan, setWorkoutPlan] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -25,6 +24,8 @@ export const WorkoutGenerator = ({ user }) => {
         `- Workout Days Per Week: ${user.workoutDaysPerWeek}\n` +
         `- Workout Location: ${user.workoutLocation}\n\n` +
         `Please provide a structured workout plan in JSON format with the following structure:\n` +
+        `Please make sure you always mention all 7 days of week, please keep in mind if some one selected like 4 days a week workout, then select workout plan of best 4 days and remaning days as rest-day, please deside number of rest day and exercies empty array  \n` +
+        `Please make sure start the workout from sunday, then monday to saturday \n` +
         `{\n` +
         `  "weeklySchedule": [\n` +
         `    {\n` +
@@ -34,7 +35,7 @@ export const WorkoutGenerator = ({ user }) => {
         `        {\n` +
         `          "name": "exercise name",\n` +
         `          "sets": "number of sets",\n` +
-        `          "reps": "reps per set",\n` +
+        `          "reps": "reps per set", {please make sure return this in string}\n` +
         `          "notes": "any special instructions"\n` +
         `        }\n` +
         `      ]\n` +
@@ -62,27 +63,44 @@ export const WorkoutGenerator = ({ user }) => {
       };
 
       const response = await axios.request(options);
-      console.log(response.data);
-      const workoutData = JSON.parse(response.data.choices[0].message.content);
-      console.log("workout data ", workoutData);
-      // Save workout plan to database
-      const saveResponse = await fetch(
-        "http://localhost:5000/api/user/workout",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify(workoutData),
+      // console.log(response.data.choices[0].message.content);
+      const rawContent = response.data.choices[0].message.content;
+      console.log("raw content ", rawContent);
+
+      const rawMessage = response.data.choices[0].message.content;
+
+      const match = rawMessage.match(/```(?:json)?\s*([\s\S]*?)```/);
+
+      console.log(match);
+
+      if (match && match[1]) {
+        try {
+          // Step 2: Parse the JSON
+          const workoutData = JSON.parse(match[1]);
+          console.log("✅ Parsed JSON:", workoutData);
+
+          // Save workout plan to database
+          const saveResponse = await fetch(
+            "http://localhost:5000/api/user/workout",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+              body: JSON.stringify(workoutData),
+            }
+          );
+
+          if (!saveResponse.ok) {
+            throw new Error("Failed to save workout plan");
+          }
+        } catch (err) {
+          console.error("❌ JSON Parse Error:", err.message);
         }
-      );
-
-      if (!saveResponse.ok) {
-        throw new Error("Failed to save workout plan");
+      } else {
+        console.error("❌ No JSON block found");
       }
-
-      setWorkoutPlan(workoutData);
     } catch (err) {
       setError(err.message || "Failed to generate workout plan");
     } finally {
@@ -101,29 +119,6 @@ export const WorkoutGenerator = ({ user }) => {
       </button>
 
       {error && <p className="error">{error}</p>}
-
-      {workoutPlan && (
-        <div className="workout-plan">
-          <h3>Your Personalized Workout Plan</h3>
-          {workoutPlan.weeklySchedule.map((day, index) => (
-            <div key={index} className="workout-day">
-              <h4>
-                {day.day} - {day.focus}
-              </h4>
-              <div className="exercises">
-                {day.exercises.map((exercise, exIndex) => (
-                  <div key={exIndex} className="exercise">
-                    <h5>{exercise.name}</h5>
-                    <p>Sets: {exercise.sets}</p>
-                    <p>Reps: {exercise.reps}</p>
-                    {exercise.notes && <p>Notes: {exercise.notes}</p>}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 };
