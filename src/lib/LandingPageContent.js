@@ -111,13 +111,13 @@ const LandingContent = {
         quote:
           "With a tight student schedule and no gym membership, I wasn’t sure how to stay active. This app solved that. My workout plan is built around my limited time and space, and it actually makes me look forward to training. I’ve even got a few friends using it now.",
       },
-      {
-        name: "Natasha M.",
-        age: 31,
-        profession: "Freelance Designer",
-        quote:
-          "Fitness always felt like something I’d ‘start next month.’ But this app took away the guesswork and gave me an actionable plan tailored just for me. I loved how it includes a mix of strength, flexibility, and recovery – and explains why each day is designed the way it is. It finally feels sustainable.",
-      },
+      // {
+      //   name: "Natasha M.",
+      //   age: 31,
+      //   profession: "Freelance Designer",
+      //   quote:
+      //     "Fitness always felt like something I’d ‘start next month.’ But this app took away the guesswork and gave me an actionable plan tailored just for me. I loved how it includes a mix of strength, flexibility, and recovery – and explains why each day is designed the way it is. It finally feels sustainable.",
+      // },
     ],
   },
 
