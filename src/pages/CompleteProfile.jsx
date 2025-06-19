@@ -1,54 +1,76 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { Input } from "../components/ui/input";
+import { Textarea } from "../components/ui/textarea";
+import { Button } from "../components/ui/button";
+import { Label } from "../components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
+import { Badge } from "../components/ui/badge";
+import { Alert, AlertDescription } from "../components/ui/alert";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/select";
+import { Separator } from "../components/ui/separator";
+import {
+  User,
+  Target,
+  Dumbbell,
+  Calendar,
+  Activity,
+  Heart,
+  Clock,
+} from "lucide-react";
 
 export const CompleteProfile = () => {
   const navigate = useNavigate();
-
   const { token, setUser } = useAuth();
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [newTrainingType, setNewTrainingType] = useState("");
+
+  // Only include essential form fields that users should fill
   const [formData, setFormData] = useState({
-    // Basic Info
     gender: "",
     dateOfBirth: "",
     height: "",
     weight: "",
     bodyFatPercent: "",
-
-    // Fitness Goals
     fitnessGoal: "",
     targetWeight: "",
     timeline: "",
-
-    // Fitness Experience
     fitnessLevel: "",
     workoutLocation: "",
     workoutDaysPerWeek: "",
-    preferredTrainingTypes: [], // Array for training type tags
+    preferredTrainingTypes: [],
     dietPlan: "",
     medicalConditions: "",
-
-    // Lifestyle & Activity
     activityLevel: "",
     sleepHours: "",
-    stressLevel: "Medium", // Default value to prevent validation error
-
-    // Workout Preferences
+    stressLevel: "Medium",
     focusAreas: [],
-    workoutDuration: 30, // Default value from enum
-    workoutTimePreference: "Morning", // Default value to prevent validation error
+    workoutDuration: "30",
+    workoutTimePreference: "Morning",
   });
 
-  function formatDateForInput(isoString) {
-    if (!isoString) return ""; // handle empty case
+  const formatDateForInput = (isoString) => {
+    if (!isoString) return "";
     const date = new Date(isoString);
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const year = date.getFullYear();
-
     return `${year}-${month}-${day}`;
-  }
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -59,33 +81,35 @@ export const CompleteProfile = () => {
           },
         });
         const data = await response.json();
-
-        // if (data.profileCompleted) {
-        //   setUser(data);
-        //   navigate("/dashboard", { replace: true });
-        //   return;
-        // }
-
         if (response.ok) {
-          // Pre-fill form data with existing user data
+          // Only update form fields that exist in our formData structure
+          const filteredData = Object.keys(formData).reduce((acc, key) => {
+            if (data[key] !== undefined) {
+              acc[key] =
+                key === "dateOfBirth" && data[key]
+                  ? formatDateForInput(data[key])
+                  : data[key];
+            }
+            return acc;
+          }, {});
+
           setFormData((prevData) => ({
             ...prevData,
-            ...data,
-            dateOfBirth: data.dateOfBirth
-              ? formatDateForInput(data.dateOfBirth)
-              : "",
+            ...filteredData,
           }));
         }
       } catch (err) {
         setError("Failed to fetch user data");
       }
     };
-
     fetchUserData();
-  }, [token, navigate, setUser]);
+  }, [token]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
+
     try {
       const response = await fetch("http://localhost:5000/api/user/profile", {
         method: "POST",
@@ -99,7 +123,6 @@ export const CompleteProfile = () => {
       const data = await response.json();
       if (!response.ok) throw new Error(data.message);
 
-      // Update the user data in AuthContext after successful profile completion
       const userResponse = await fetch("http://localhost:5000/api/user/me", {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -107,371 +130,440 @@ export const CompleteProfile = () => {
       });
       const userData = await userResponse.json();
       if (userResponse.ok) {
-        setUser(userData); // Update the user state with the latest data
+        setUser(userData);
       }
 
+      navigate(0);
       navigate("/dashboard");
     } catch (err) {
       setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleChange = (e) => {
-    const { name, value, type } = e.target;
-    if (type === "checkbox") {
-      const array = [...formData[name]];
-      const index = array.indexOf(value);
-      if (index === -1) {
-        array.push(value);
-      } else {
-        array.splice(index, 1);
-      }
-      setFormData({ ...formData, [name]: array });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
+  const handleInputChange = (key, value) => {
+    setFormData({ ...formData, [key]: value });
   };
 
-  const handleAddTrainingType = (e) => {
-    e.preventDefault();
+  const handleFocusAreaChange = (area) => {
+    const updated = formData.focusAreas.includes(area)
+      ? formData.focusAreas.filter((item) => item !== area)
+      : [...formData.focusAreas, area];
+    setFormData({ ...formData, focusAreas: updated });
+  };
+
+  const addTrainingType = () => {
     if (
       newTrainingType.trim() &&
       !formData.preferredTrainingTypes.includes(newTrainingType.trim())
     ) {
-      setFormData((prev) => ({
-        ...prev,
+      setFormData({
+        ...formData,
         preferredTrainingTypes: [
-          ...prev.preferredTrainingTypes,
+          ...formData.preferredTrainingTypes,
           newTrainingType.trim(),
         ],
-      }));
+      });
       setNewTrainingType("");
     }
   };
 
-  const handleRemoveTrainingType = (typeToRemove) => {
-    setFormData((prev) => ({
-      ...prev,
-      preferredTrainingTypes: prev.preferredTrainingTypes.filter(
+  const removeTrainingType = (typeToRemove) => {
+    setFormData({
+      ...formData,
+      preferredTrainingTypes: formData.preferredTrainingTypes.filter(
         (type) => type !== typeToRemove
       ),
-    }));
+    });
   };
 
+  const formatLabel = (key) => {
+    const labelMap = {
+      dateOfBirth: "Date of Birth",
+      bodyFatPercent: "Body Fat Percentage (%)",
+      fitnessGoal: "Fitness Goal",
+      targetWeight: "Target Weight (kg)",
+      fitnessLevel: "Fitness Level",
+      workoutLocation: "Workout Location",
+      workoutDaysPerWeek: "Workout Days Per Week",
+      preferredTrainingTypes: "Preferred Training Types",
+      dietPlan: "Diet Plan",
+      medicalConditions: "Medical Conditions",
+      activityLevel: "Activity Level",
+      sleepHours: "Sleep Hours",
+      stressLevel: "Stress Level",
+      focusAreas: "Focus Areas",
+      workoutDuration: "Workout Duration (minutes)",
+      workoutTimePreference: "Workout Time Preference",
+    };
+    return (
+      labelMap[key] ||
+      key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())
+    );
+  };
+
+  const renderField = (key) => {
+    const value = formData[key];
+    const commonProps = {
+      id: key,
+      value: value || "",
+      onChange: (e) => handleInputChange(key, e.target.value),
+    };
+
+    // Textarea fields
+    if (["dietPlan", "medicalConditions"].includes(key)) {
+      return (
+        <Textarea
+          {...commonProps}
+          placeholder={`Enter your ${formatLabel(key).toLowerCase()}...`}
+          rows={3}
+        />
+      );
+    }
+
+    // Date field
+    if (key === "dateOfBirth") {
+      return <Input type="date" {...commonProps} />;
+    }
+
+    // Number fields
+    if (
+      [
+        "height",
+        "weight",
+        "bodyFatPercent",
+        "targetWeight",
+        "workoutDaysPerWeek",
+        "sleepHours",
+      ].includes(key)
+    ) {
+      const placeholders = {
+        height: "Height in cm",
+        weight: "Weight in kg",
+        bodyFatPercent: "Body fat %",
+        targetWeight: "Target weight in kg",
+        workoutDaysPerWeek: "Days per week",
+        sleepHours: "Hours per night",
+      };
+      return (
+        <Input type="number" {...commonProps} placeholder={placeholders[key]} />
+      );
+    }
+
+    // Select fields
+    const selectOptions = {
+      gender: ["Male", "Female", "Non-binary", "Prefer not to say"],
+      fitnessGoal: [
+        "Fat loss",
+        "Muscle gain",
+        "Endurance",
+        "Body recomposition",
+        "Health",
+        "Sports prep",
+      ],
+      timeline: ["1 month", "3 months", "6 months", "1 year", "Long term"],
+      fitnessLevel: ["Beginner", "Intermediate", "Advanced"],
+      workoutLocation: ["Gym", "Home", "Both", "Outdoor"],
+      activityLevel: ["Sedentary", "Lightly Active", "Active", "Very Active"],
+      stressLevel: ["Low", "Medium", "High"],
+      workoutDuration: ["30", "45", "60", "90"],
+      workoutTimePreference: [
+        "Morning",
+        "Afternoon",
+        "Evening",
+        "No preference",
+      ],
+    };
+
+    if (selectOptions[key]) {
+      return (
+        <Select
+          value={value}
+          onValueChange={(newValue) => handleInputChange(key, newValue)}
+        >
+          <SelectTrigger>
+            <SelectValue
+              placeholder={`Select ${formatLabel(key).toLowerCase()}`}
+            />
+          </SelectTrigger>
+          <SelectContent>
+            {selectOptions[key].map((option) => (
+              <SelectItem key={option} value={option}>
+                {option}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      );
+    }
+
+    return (
+      <Input
+        type="text"
+        {...commonProps}
+        placeholder={`Enter ${formatLabel(key).toLowerCase()}`}
+      />
+    );
+  };
+
+  const focusAreaOptions = [
+    "Upper Body",
+    "Lower Body",
+    "Core",
+    "Cardio",
+    "Flexibility",
+  ];
+
   return (
-    <div className="complete-profile">
-      <h2>Complete Your Fitness Profile</h2>
-      {error && <p className="error">{error}</p>}
-      <form onSubmit={handleSubmit}>
-        {/* Basic Info */}
-        <section>
-          <h3>Basic Information</h3>
-          <div>
-            <label>Gender</label>
-            <select
-              name="gender"
-              value={formData.gender}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select Gender</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Non-binary">Non-binary</option>
-              <option value="Prefer not to say">Prefer not to say</option>
-            </select>
-          </div>
-          <div>
-            <label>Date of Birth</label>
-            <input
-              type="date"
-              name="dateOfBirth"
-              value={formatDateForInput(formData.dateOfBirth)}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div>
-            <label>Height (cm)</label>
-            <input
-              type="number"
-              name="height"
-              value={formData.height}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div>
-            <label>Weight (kg)</label>
-            <input
-              type="number"
-              name="weight"
-              value={formData.weight}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div>
-            <label>Body Fat Percentage</label>
-            <input
-              type="number"
-              name="bodyFatPercent"
-              value={formData.bodyFatPercent}
-              onChange={handleChange}
-              min="1"
-              max="100"
-            />
-          </div>
-        </section>
-
-        {/* Fitness Goals */}
-        <section>
-          <h3>Fitness Goals</h3>
-          <div>
-            <label>Fitness Goal</label>
-            <select
-              name="fitnessGoal"
-              value={formData.fitnessGoal}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select Goal</option>
-              <option value="Fat loss">Fat loss</option>
-              <option value="Muscle gain">Muscle gain</option>
-              <option value="Endurance">Endurance</option>
-              <option value="Body recomposition">Body recomposition</option>
-              <option value="Health">Health</option>
-              <option value="Sports prep">Sports prep</option>
-            </select>
-          </div>
-          <div>
-            <label>Target Weight (kg)</label>
-            <input
-              type="number"
-              name="targetWeight"
-              value={formData.targetWeight}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div>
-            <label>Timeline (e.g., "3 months", "6 months")</label>
-            <input
-              type="text"
-              name="timeline"
-              value={formData.timeline}
-              onChange={handleChange}
-              required
-            />
-          </div>
-        </section>
-
-        {/* Fitness Experience */}
-        <section>
-          <h3>Fitness Experience</h3>
-          <div>
-            <label>Fitness Level</label>
-            <select
-              name="fitnessLevel"
-              value={formData.fitnessLevel}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select Level</option>
-              <option value="Beginner">Beginner</option>
-              <option value="Intermediate">Intermediate</option>
-              <option value="Advanced">Advanced</option>
-            </select>
-          </div>
-          <div>
-            <label>Workout Location</label>
-            <select
-              name="workoutLocation"
-              value={formData.workoutLocation}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select Location</option>
-              <option value="Gym">Gym</option>
-              <option value="Home">Home</option>
-              <option value="Both">Both</option>
-              <option value="Neither">Neither</option>
-            </select>
-          </div>
-          <div>
-            <label>Workout Days Per Week</label>
-            <input
-              type="number"
-              name="workoutDaysPerWeek"
-              value={formData.workoutDaysPerWeek}
-              onChange={handleChange}
-              min="0"
-              max="7"
-              required
-            />
-          </div>
-          <div>
-            <label>Diet Plan</label>
-            <textarea
-              name="dietPlan"
-              value={formData.dietPlan}
-              onChange={handleChange}
-              placeholder="Describe your current diet plan"
-            />
-          </div>
-          <div>
-            <label>Medical Conditions</label>
-            <textarea
-              name="medicalConditions"
-              value={formData.medicalConditions}
-              onChange={handleChange}
-              placeholder="List any relevant medical conditions"
-            />
-          </div>
-        </section>
-
-        {/* Lifestyle */}
-        <section>
-          <h3>Lifestyle & Activity</h3>
-          <div>
-            <label>Activity Level</label>
-            <select
-              name="activityLevel"
-              value={formData.activityLevel}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select Activity Level</option>
-              <option value="Sedentary">Sedentary</option>
-              <option value="Lightly Active">Lightly Active</option>
-              <option value="Active">Active</option>
-              <option value="Very Active">Very Active</option>
-            </select>
-          </div>
-          <div>
-            <label>Sleep Hours</label>
-            <input
-              type="number"
-              name="sleepHours"
-              value={formData.sleepHours}
-              onChange={handleChange}
-              min="0"
-              max="24"
-              required
-            />
-          </div>
-          <div>
-            <label>Stress Level</label>
-            <select
-              name="stressLevel"
-              value={formData.stressLevel}
-              onChange={handleChange}
-              required
-            >
-              <option value="Low">Low</option>
-              <option value="Medium">Medium</option>
-              <option value="High">High</option>
-            </select>
-          </div>
-        </section>
-
-        {/* Workout Preferences */}
-        <section>
-          <h3>Workout Preferences</h3>
-          <div>
-            <label>Focus Areas</label>
-            <div className="checkbox-group">
-              {[
-                "Upper Body",
-                "Lower Body",
-                "Core",
-                "Cardio",
-                "Flexibility",
-              ].map((area) => (
-                <label key={area}>
-                  <input
-                    type="checkbox"
-                    name="focusAreas"
-                    value={area}
-                    checked={formData.focusAreas.includes(area)}
-                    onChange={handleChange}
-                  />
-                  {area}
-                </label>
-              ))}
+    <div className="min-h-screen bg-[#111] py-8">
+      <div className="max-w-4xl mx-auto px-4">
+        <Card className="shadow-lg">
+          <CardHeader className="text-center pb-8">
+            <div className="mx-auto w-16 h-16 bg-orange-600 rounded-full flex items-center justify-center mb-4">
+              <User className="w-8 h-8 text-black" />
             </div>
-          </div>
-          <div>
-            <label>Workout Duration (minutes)</label>
-            <select
-              name="workoutDuration"
-              value={formData.workoutDuration}
-              onChange={handleChange}
-              required
-            >
-              <option value="30">30 minutes</option>
-              <option value="45">45 minutes</option>
-              <option value="60">60 minutes</option>
-              <option value="90">90 minutes</option>
-            </select>
-          </div>
-          <div>
-            <label>Preferred Workout Time</label>
-            <select
-              name="workoutTimePreference"
-              value={formData.workoutTimePreference}
-              onChange={handleChange}
-              required
-            >
-              <option value="Morning">Morning</option>
-              <option value="Afternoon">Afternoon</option>
-              <option value="Evening">Evening</option>
-              <option value="No preference">No preference</option>
-            </select>
-          </div>
-        </section>
+            <CardTitle className="text-3xl font-bold text-neutral-400">
+              Complete Your Profile
+            </CardTitle>
+            <CardDescription className="text-sm text-neutral-600">
+              Help us personalize your fitness journey by providing some details
+              about yourself
+            </CardDescription>
+          </CardHeader>
 
-        {/* Add this section where appropriate in your form */}
-        <section>
-          <h3>Training Preferences</h3>
-          <div className="training-types-input">
-            <label>Preferred Training Types</label>
-            <div className="tag-input-container">
-              <div className="tags-container">
-                {formData.preferredTrainingTypes.map((type, index) => (
-                  <span key={index} className="tag">
-                    {type}
-                    <button
+          <CardContent>
+            {error && (
+              <Alert className="mb-6 border-red-700 bg-red-900">
+                <AlertDescription className="text-red-800">
+                  {error}
+                </AlertDescription>
+              </Alert>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-8">
+              {/* Personal Information */}
+              <div className="space-y-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <User className="w-5 h-5 text-orange-600" />
+                  <h3 className="text-xl font-semibold text-neutral-400">
+                    Personal Information
+                  </h3>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {[
+                    "gender",
+                    "dateOfBirth",
+                    "height",
+                    "weight",
+                    "bodyFatPercent",
+                  ].map((key) => (
+                    <div key={key} className="space-y-2">
+                      <Label
+                        htmlFor={key}
+                        className="text-sm font-medium text-neutral-700"
+                      >
+                        {formatLabel(key)}
+                      </Label>
+                      {renderField(key)}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Fitness Goals */}
+              <div className="space-y-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <Target className="w-5 h-5 text-green-600" />
+                  <h3 className="text-xl font-semibold text-neutral-600">
+                    Fitness Goals
+                  </h3>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {[
+                    "fitnessGoal",
+                    "targetWeight",
+                    "timeline",
+                    "fitnessLevel",
+                  ].map((key) => (
+                    <div key={key} className="space-y-2">
+                      <Label
+                        htmlFor={key}
+                        className="text-sm font-medium text-neutral-700"
+                      >
+                        {formatLabel(key)}
+                      </Label>
+                      {renderField(key)}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Workout Preferences */}
+              <div className="space-y-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <Dumbbell className="w-5 h-5 text-orange-600" />
+                  <h3 className="text-xl font-semibold text-neutral-600">
+                    Workout Preferences
+                  </h3>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {[
+                    "workoutLocation",
+                    "workoutDaysPerWeek",
+                    "workoutDuration",
+                    "workoutTimePreference",
+                  ].map((key) => (
+                    <div key={key} className="space-y-2">
+                      <Label
+                        htmlFor={key}
+                        className="text-sm font-medium text-neutral-700"
+                      >
+                        {formatLabel(key)}
+                      </Label>
+                      {renderField(key)}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Focus Areas */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium text-neutral-600">
+                    Focus Areas
+                  </Label>
+                  <div className="flex flex-wrap gap-3">
+                    {focusAreaOptions.map((area) => (
+                      <label
+                        key={area}
+                        className="flex items-center gap-2 cursor-pointer"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={formData.focusAreas.includes(area)}
+                          onChange={() => handleFocusAreaChange(area)}
+                          className="rounded border-neutral-300 text-blue-600 focus:ring-blue-500"
+                        />
+                        <span className="text-sm text-neutral-700">{area}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Preferred Training Types */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium text-neutral-700">
+                    Preferred Training Types
+                  </Label>
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {formData.preferredTrainingTypes.map((type) => (
+                      <Badge
+                        key={type}
+                        variant="secondary"
+                        className="px-3 py-1"
+                      >
+                        {type}
+                        <button
+                          type="button"
+                          onClick={() => removeTrainingType(type)}
+                          className="ml-2 text-neutral-500 hover:text-neutral-700"
+                        >
+                          ×
+                        </button>
+                      </Badge>
+                    ))}
+                  </div>
+                  <div className="flex gap-2">
+                    <Input
+                      value={newTrainingType}
+                      onChange={(e) => setNewTrainingType(e.target.value)}
+                      placeholder="Add training type (e.g., Yoga, HIIT, Swimming)"
+                      onKeyPress={(e) =>
+                        e.key === "Enter" &&
+                        (e.preventDefault(), addTrainingType())
+                      }
+                    />
+                    <Button
                       type="button"
-                      onClick={() => handleRemoveTrainingType(type)}
-                      className="remove-tag"
+                      onClick={addTrainingType}
+                      variant="outline"
                     >
-                      ×
-                    </button>
-                  </span>
-                ))}
+                      Add
+                    </Button>
+                  </div>
+                </div>
               </div>
-              <div className="tag-input-form">
-                <input
-                  type="text"
-                  value={newTrainingType}
-                  onChange={(e) => setNewTrainingType(e.target.value)}
-                  placeholder="Add training type (e.g., 'Weightlifting', 'Yoga')"
-                />
-                <button
-                  type="button"
-                  onClick={handleAddTrainingType}
-                  className="add-tag"
-                >
-                  Add
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
 
-        <button type="submit">Complete Profile</button>
-      </form>
+              <Separator />
+
+              {/* Lifestyle & Health */}
+              <div className="space-y-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <Heart className="w-5 h-5 text-red-600" />
+                  <h3 className="text-xl font-semibold text-neutral-600">
+                    Lifestyle & Health
+                  </h3>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {["activityLevel", "sleepHours", "stressLevel"].map((key) => (
+                    <div key={key} className="space-y-2">
+                      <Label
+                        htmlFor={key}
+                        className="text-sm font-medium text-neutral-700"
+                      >
+                        {formatLabel(key)}
+                      </Label>
+                      {renderField(key)}
+                    </div>
+                  ))}
+                </div>
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="dietPlan"
+                    className="text-sm font-medium text-neutral-700"
+                  >
+                    Diet Plan
+                  </Label>
+                  {renderField("dietPlan")}
+                </div>
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="medicalConditions"
+                    className="text-sm font-medium text-neutral-700"
+                  >
+                    Medical Conditions
+                  </Label>
+                  {renderField("medicalConditions")}
+                  <p className="text-xs text-neutral-500">
+                    Please list any medical conditions, injuries, or physical
+                    limitations we should know about
+                  </p>
+                </div>
+              </div>
+
+              <div className="pt-6">
+                <Button
+                  type="submit"
+                  className="w-full bg-orange-400 hover:bg-orange-300 text-black py-3 text-lg font-medium"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      Saving Profile...
+                    </div>
+                  ) : (
+                    "Complete Profile"
+                  )}
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };

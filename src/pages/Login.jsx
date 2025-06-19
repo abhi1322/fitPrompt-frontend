@@ -7,6 +7,7 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { PasswordInput } from "../components/custom/Password";
+import Logo from "../assets/logo.png";
 
 export const Login = ({ className, ...props }) => {
   const [email, setEmail] = useState("");
@@ -36,11 +37,11 @@ export const Login = ({ className, ...props }) => {
           <div className="flex flex-col gap-6">
             <div className="flex flex-col items-center gap-2">
               <a
-                href="#"
+                href="/"
                 className="flex flex-col items-center gap-2 font-medium"
               >
-                <div className="flex size-8 items-center justify-center rounded-md">
-                  <GalleryVerticalEnd className="size-6" />
+                <div className="flex  items-center justify-center rounded-md">
+                  <img src={Logo} alt="logo" />
                 </div>
                 <span className="sr-only">Fitprompt.</span>
               </a>

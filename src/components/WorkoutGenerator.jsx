@@ -2,6 +2,8 @@ import { useState } from "react";
 import axios from "axios";
 import { Button } from "./ui/button";
 import { generateWorkoutPrompt } from "../lib/prompt";
+import AIIcon from "../assets/ai-icon.svg";
+import { ToastContainer, toast } from "react-toastify";
 
 export const WorkoutGenerator = ({ user }) => {
   const [loading, setLoading] = useState(false);
@@ -80,6 +82,17 @@ export const WorkoutGenerator = ({ user }) => {
       setError(err.message || "Failed to generate workout plan");
     } finally {
       setLoading(false);
+      toast.success("🦄 Wow so easy!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
     }
   };
 
@@ -88,12 +101,25 @@ export const WorkoutGenerator = ({ user }) => {
       <Button
         onClick={generateWorkout}
         disabled={loading}
-        className="generate-button"
+        className="generate-button rounded-full bg-orange-400"
       >
+        <img src={AIIcon} alt="ai-icon" />
         {loading ? "Generating..." : "Generate Workout Plan"}
       </Button>
-
       {error && <p className="error">{error}</p>}
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        transition={Bounce}
+      />
     </div>
   );
 };

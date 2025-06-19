@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Logo from "../../assets/logo.png";
 
 const Navbar = ({ user }) => {
@@ -17,6 +17,7 @@ const Navbar = ({ user }) => {
     window.location.reload();
   };
 
+  const navigate = useNavigate();
   const location = useLocation();
 
   return (
