@@ -1,6 +1,6 @@
 const LandingContent = {
   hero: {
-    headline: "Achieve Your Fitness Goals with AI-Powered Workout Plans",
+    headline: "Achieve Your Fitness Goals with  AI-Powered Workout Plans",
     subheadline:
       "Personalized fitness routines, designed just for you – based on your goals, fitness level, and training preferences.",
     ctaButtons: ["Get Started Free", "How It Works"],
