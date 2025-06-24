@@ -47,15 +47,21 @@ export const Dashboard = () => {
               Let’s crush your goals today. Consistency builds results. 💪
             </p>
           </div>
-
-          <div className="border border-white/10 backdrop-blur-3xl rounded-xl flex flex-col px-8 py-8 gap-2">
-            <h3 className="text-xs font-light">
-              Workout for {date.toDateString()}
-            </h3>
-            <h6 className="border border-white/10 bg-white/[5%] backdrop-blur-3xl px-4 py-2 rounded-md text-sm text-yellow-600">
-              Focus: {workoutForSelectedDate.focus}
-            </h6>
-          </div>
+          {!workoutForSelectedDate ? (
+            <div className="bg-[#111] py-8 px-8 rounded-xl">
+              <h1 className="font-semibold text-xl mb-4">Generate workout</h1>
+              <WorkoutGenerator user={user} />
+            </div>
+          ) : (
+            <div className="border border-white/10 backdrop-blur-3xl rounded-xl flex flex-col px-8 py-8 gap-2">
+              <h3 className="text-xs font-light">
+                Workout for {date.toDateString()}
+              </h3>
+              <h6 className="border border-white/10 bg-white/[5%] backdrop-blur-3xl px-4 py-2 rounded-md text-sm text-yellow-600">
+                Focus: {workoutForSelectedDate.focus}
+              </h6>
+            </div>
+          )}
         </div>
         <div>
           <Calendar
@@ -66,13 +72,6 @@ export const Dashboard = () => {
           />
         </div>
       </div>
-
-      {!workoutForSelectedDate ? (
-        <div>
-          <h1>Generate workout</h1>
-          <WorkoutGenerator user={user} />
-        </div>
-      ) : null}
 
       {workoutForSelectedDate && (
         <>

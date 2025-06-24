@@ -11,6 +11,7 @@ import { Register } from "./pages/Register";
 import { CompleteProfile } from "./pages/CompleteProfile";
 import { Dashboard } from "./pages/Dashboard";
 import LandingPage from "./pages/LandingPage";
+import "./App.css";
 
 // Wrapper component for public routes (login/register)
 const PublicRoute = ({ children }) => {
