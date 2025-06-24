@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { Button } from "./ui/button";
 import { generateWorkoutPrompt } from "../lib/prompt";
+import AIIcon from "../assets/ai-icon.svg";
 
 export const WorkoutGenerator = ({ user }) => {
   const [loading, setLoading] = useState(false);
@@ -88,11 +89,11 @@ export const WorkoutGenerator = ({ user }) => {
       <Button
         onClick={generateWorkout}
         disabled={loading}
-        className="generate-button"
+        className="generate-button rounded-full bg-orange-400"
       >
+        <img src={AIIcon} alt="ai-icon" />
         {loading ? "Generating..." : "Generate Workout Plan"}
       </Button>
-
       {error && <p className="error">{error}</p>}
     </div>
   );
