@@ -34,11 +34,11 @@ const LandingPage = () => {
         />
 
         <div className="px-10 relative pt-20 ">
-          <h2 className="font-bold text-[1.5rem] md:text-5xl bg-gradient-to-b from-[#FFFFFF] to-[#555555] bg-clip-text text-transparent">
+          <h2 className="font-bold text-[4.9vw] md:text-5xl bg-gradient-to-b from-[#FFFFFF] to-[#555555] bg-clip-text text-transparent">
             Achieve Your Fitness Goals with
           </h2>
           <h2
-            className="relative font-bold text-[1.6rem] md:text-5xl bg-gradient-to-b from-[#FFFFFF] to-[#555555] bg-clip-text text-transparent "
+            className="relative font-bold text-[4.9vw] md:text-5xl bg-gradient-to-b from-[#FFFFFF] to-[#555555] bg-clip-text text-transparent "
             data-text="AI-Powered Workout Plans"
           >
             AI-Powered Workout Plans
