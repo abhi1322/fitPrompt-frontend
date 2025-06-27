@@ -38,6 +38,7 @@ export const CompleteProfile = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [newTrainingType, setNewTrainingType] = useState("");
+  const API_BACKEND_URL = import.meta.env.VITE_APP_BACKEND_URL;
 
   // Only include essential form fields that users should fill
   const [formData, setFormData] = useState({
@@ -75,7 +76,7 @@ export const CompleteProfile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/user/me", {
+        const response = await fetch(`${API_BACKEND_URL}/api/user/me`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -99,7 +100,7 @@ export const CompleteProfile = () => {
           }));
         }
       } catch (err) {
-        setError("Failed to fetch user data");
+        setError("Failed to fetch user data", err?.message);
       }
     };
     fetchUserData();
@@ -111,7 +112,7 @@ export const CompleteProfile = () => {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/user/profile", {
+      const response = await fetch(`${API_BACKEND_URL}/api/user/profile`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -123,7 +124,7 @@ export const CompleteProfile = () => {
       const data = await response.json();
       if (!response.ok) throw new Error(data.message);
 
-      const userResponse = await fetch("http://localhost:5000/api/user/me", {
+      const userResponse = await fetch(`${API_BACKEND_URL}/api/user/me`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -335,7 +336,7 @@ export const CompleteProfile = () => {
           <CardContent>
             {error && (
               <Alert className="mb-6 border-red-700 bg-red-900">
-                <AlertDescription className="text-red-800">
+                <AlertDescription className="text-black">
                   {error}
                 </AlertDescription>
               </Alert>

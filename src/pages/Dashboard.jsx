@@ -7,9 +7,14 @@ import Blob1 from "../assets/blob-1.svg";
 import Blob2 from "../assets/blob-2.svg";
 import RestDaySVG from "../assets/rest-day.svg";
 import Navbar from "../components/custom/Navbar";
+import Logo from "../assets/logo.png";
+import Insta from "../assets/insta.svg";
+import Facebook from "../assets/fb.svg";
+import Gmail from "../assets/gmail.svg";
+import Twitter from "../assets/twiter.svg";
 
 export const Dashboard = () => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [date, setDate] = useState(new Date());
 
   const getWorkoutForDate = (selectedDate) => {
@@ -24,7 +29,7 @@ export const Dashboard = () => {
   // console.log(user);
 
   return (
-    <div className="flex flex-col">
+    <div className="relative max-w-screen overflow-x-clip flex w-full flex-col min-h-screen ">
       <Navbar user={user} />
       <img
         src={Blob1}
@@ -36,7 +41,7 @@ export const Dashboard = () => {
         alt="blob-1"
         className="absolute -z-50 scale-200 opacity-20 left-[20%] top-[20%] blur-2xl"
       />
-      <div className="w-2/3 mx-auto mt-16 gap-6 justify-center flex flex-wrap">
+      <div className="md:w-2/3 flex-11/12  mx-auto mt-16 gap-6 justify-center flex flex-wrap">
         <div className="flex flex-col gap-4">
           <div className="bg-neutral-950 px-8 py-8 rounded-xl">
             <h2 className="font-bold text-2xl">
@@ -77,20 +82,24 @@ export const Dashboard = () => {
         <>
           {workoutForSelectedDate.focus && (
             <div className="w-2/3 mx-auto">
-              {workoutForSelectedDate.focus === "Rest day" ? (
-                <>
-                  <div className="flex">
+              {console.log(workoutForSelectedDate.focus)}
+              {workoutForSelectedDate.focus === "Rest Day" ? (
+                <div className="w-full">
+                  <div className="flex flex-col justify-center items-center my-16">
                     <img
                       src={RestDaySVG}
                       alt="svg for rest day"
-                      className="h-[200px] w-auto"
+                      className="h-[300px] w-auto mx-auto ,t-"
                     />
+                    <p className="text-4xl text-center  text-white/50 mt-8">
+                      Focus on recovery and rest.
+                    </p>
                   </div>
-                </>
+                </div>
               ) : (
                 <ul className="flex flex-wrap-reverse gap-8 mt-16 items-center justify-center">
                   {workoutForSelectedDate.exercises.map((exercise, index) => (
-                    <WorkoutCard exercise={exercise} />
+                    <WorkoutCard exercise={exercise} key={index} />
                   ))}
                 </ul>
               )}
@@ -98,6 +107,58 @@ export const Dashboard = () => {
           )}
         </>
       )}
+      {/* footer */}
+      <div className="bg-[#111111] mt-32">
+        <div className="md:w-4/6 mx-auto mt-8 flex flex-wrap justify-between md:items-start">
+          <img src={Logo} className="w-30 h-[35px] " alt="logo" />
+          <div>
+            <ul className="text-xs flex flex-col gap-1 text-neutral-400">
+              <li>
+                <a href="/">About us</a>
+              </li>
+              <li>
+                <a href="/">Contact </a>
+              </li>
+              <li>
+                <a href="/">Terms of service</a>
+              </li>
+              <li>
+                <a href="/">Privacy Policy</a>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h6 className="text-sm text-right text-neutral-400">Contact us</h6>
+            <ul className="flex gap-2 mt-2">
+              <li>
+                <a href="/">
+                  <img src={Insta} alt="ICON" className="w-4" />
+                </a>
+              </li>
+              <li>
+                <a href="/">
+                  <img src={Facebook} alt="ICON" className="w-4" />
+                </a>
+              </li>
+              <li>
+                <a href="/">
+                  <img src={Gmail} alt="ICON" className="w-4" />
+                </a>
+              </li>
+              <li>
+                <a href="/">
+                  <img src={Twitter} alt="ICON" className="w-4" />
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div className="w-full border-t mt-20 py-4">
+          <p className="text-xs text-center text-neutral-400">
+            &copy; 2023 Fitprompt. All rights reserved.
+          </p>
+        </div>
+      </div>
     </div>
   );
 };

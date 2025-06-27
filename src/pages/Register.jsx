@@ -33,7 +33,7 @@ export const Register = () => {
     }
 
     try {
-      const { user } = await register(
+      await register(
         formData.firstName,
         formData.lastName,
         formData.email,
