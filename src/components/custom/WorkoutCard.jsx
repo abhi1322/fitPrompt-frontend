@@ -4,7 +4,7 @@ import VideoFrame from "./VideoFrame";
 const WorkoutCard = ({ exercise }) => {
   console.log(exercise);
   return (
-    <div className="border w-96 bg-neutral-950 rounded-2xl overflow-clip ">
+    <div className="border w-full md:w-96  bg-neutral-950 rounded-2xl overflow-clip ">
       <VideoFrame exercise={exercise?.name} />
 
       <div className="px-4 pb-2">

@@ -82,7 +82,7 @@ export const Dashboard = () => {
       {workoutForSelectedDate && (
         <>
           {workoutForSelectedDate.focus && (
-            <div className="w-2/3 mx-auto">
+            <div className="px-6 md:w-2/3 mx-auto">
               {console.log(workoutForSelectedDate.focus)}
               {workoutForSelectedDate.focus === "Rest Day" ? (
                 <div className="w-full">
@@ -98,7 +98,7 @@ export const Dashboard = () => {
                   </div>
                 </div>
               ) : (
-                <ul className="flex flex-wrap-reverse gap-8 mt-16 items-center justify-center">
+                <ul className="flex flex-wrap-reverse w-full gap-8 mt-16 items-center justify-center">
                   {workoutForSelectedDate.exercises.map((exercise, index) => (
                     <WorkoutCard exercise={exercise} key={index} />
                   ))}

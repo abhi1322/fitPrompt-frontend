@@ -99,9 +99,9 @@ const VideoFrame = ({ exercise }) => {
               youtube: {
                 playerVars: {
                   autoplay: 0,
-                  controls: 0,
+                  controls: 1,
                   modestbranding: 1,
-                  rel: 0,
+                  rel: 1,
                   showinfo: 0,
                   fs: 0,
                   iv_load_policy: 3,
