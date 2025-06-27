@@ -12,6 +12,7 @@ import Insta from "../assets/insta.svg";
 import Facebook from "../assets/fb.svg";
 import Gmail from "../assets/gmail.svg";
 import Twitter from "../assets/twiter.svg";
+import { Link } from "react-router-dom";
 
 export const Dashboard = () => {
   const { user } = useAuth();
@@ -114,16 +115,16 @@ export const Dashboard = () => {
           <div>
             <ul className="text-xs flex flex-col gap-1 text-neutral-400">
               <li>
-                <a href="/">About us</a>
+                <Link to="/">About us</Link>
               </li>
               <li>
-                <a href="/">Contact </a>
+                <Link to="/">Contact </Link>
               </li>
               <li>
-                <a href="/">Terms of service</a>
+                <Link to="/">Terms of service</Link>
               </li>
               <li>
-                <a href="/">Privacy Policy</a>
+                <Link to="/">Privacy Policy</Link>
               </li>
             </ul>
           </div>
@@ -131,24 +132,24 @@ export const Dashboard = () => {
             <h6 className="text-sm text-right text-neutral-400">Contact us</h6>
             <ul className="flex gap-2 mt-2">
               <li>
-                <a href="/">
+                <Link to="/">
                   <img src={Insta} alt="ICON" className="w-4" />
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/">
+                <Link to="/">
                   <img src={Facebook} alt="ICON" className="w-4" />
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/">
+                <Link to="/">
                   <img src={Gmail} alt="ICON" className="w-4" />
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/">
+                <Link to="/">
                   <img src={Twitter} alt="ICON" className="w-4" />
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

@@ -12,6 +12,7 @@ import { CompleteProfile } from "./pages/CompleteProfile";
 import { Dashboard } from "./pages/Dashboard";
 import LandingPage from "./pages/LandingPage";
 import "./App.css";
+import { useEffect } from "react";
 
 // Wrapper component for public routes (login/register)
 const PublicRoute = ({ children }) => {
@@ -20,6 +21,11 @@ const PublicRoute = ({ children }) => {
 };
 
 function App() {
+  useEffect(() => {
+    document.documentElement.classList.add("dark");
+    document.documentElement.classList.remove("light");
+  }, []);
+
   return (
     <Router>
       <AuthProvider>

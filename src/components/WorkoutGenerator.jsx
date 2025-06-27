@@ -3,10 +3,12 @@ import axios from "axios";
 import { Button } from "./ui/button";
 import { generateWorkoutPrompt } from "../lib/prompt";
 import AIIcon from "../assets/ai-icon.svg";
+import { useNavigate } from "react-router-dom";
 
 export const WorkoutGenerator = ({ user }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const generateWorkout = async () => {
     console.log("first step");
@@ -85,6 +87,10 @@ export const WorkoutGenerator = ({ user }) => {
       setError(err.message || "Failed to generate workout plan");
     } finally {
       setLoading(false);
+      // refresh the page
+      window.location.reload();
+      // navigate to dashboard
+      navigate("/dashboard");
     }
   };
 

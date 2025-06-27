@@ -294,16 +294,16 @@ const LandingPage = () => {
           <div>
             <ul className="w-fit text-xs flex flex-col items-center gap-1 text-neutral-400">
               <li>
-                <a href="/">About us</a>
+                <Link to="/">About us</Link>
               </li>
               <li>
-                <a href="/">Contact </a>
+                <Link to="/">Contact </Link>
               </li>
               <li>
-                <a href="/">Terms of service</a>
+                <Link to="/">Terms of service</Link>
               </li>
               <li>
-                <a href="/">Privacy Policy</a>
+                <Link to="/">Privacy Policy</Link>
               </li>
             </ul>
           </div>
@@ -311,24 +311,24 @@ const LandingPage = () => {
             <h6 className="text-sm text-right text-neutral-400">Contact us</h6>
             <ul className="flex gap-2 mt-2">
               <li>
-                <a href="/">
+                <Link to="/">
                   <img src={Insta} alt="ICON" className="w-4" />
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/">
+                <Link to="/">
                   <img src={Facebook} alt="ICON" className="w-4" />
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/">
+                <Link to="/">
                   <img src={Gmail} alt="ICON" className="w-4" />
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/">
+                <Link to="/">
                   <img src={Twitter} alt="ICON" className="w-4" />
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

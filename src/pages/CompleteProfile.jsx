@@ -134,8 +134,8 @@ export const CompleteProfile = () => {
         setUser(userData);
       }
 
-      navigate(0);
-      navigate("/dashboard");
+      // Navigate to dashboard with replace to prevent going back to profile form
+      navigate("/dashboard", { replace: true });
     } catch (err) {
       setError(err.message);
     } finally {

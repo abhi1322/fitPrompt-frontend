@@ -1,32 +1,38 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { GalleryVerticalEnd } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { PasswordInput } from "../components/custom/Password";
+import { Loader2 } from "lucide-react";
 import Logo from "../assets/logo.png";
 
 export const Login = ({ className, ...props }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
+
     try {
       const { user } = await login(email, password);
       if (!user.profileCompleted) {
-        navigate("/complete-profile");
+        navigate("/complete-profile", { replace: true });
       } else {
-        navigate("/dashboard");
+        navigate("/dashboard", { replace: true });
       }
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "Login failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -40,14 +46,14 @@ export const Login = ({ className, ...props }) => {
                 to="/"
                 className="flex flex-col items-center gap-2 font-medium"
               >
-                <div className="flex  items-center justify-center rounded-md">
+                <div className="flex items-center justify-center rounded-md">
                   <img src={Logo} alt="logo" />
                 </div>
                 <span className="sr-only">Fitprompt.</span>
               </Link>
               <h1 className="text-xl font-bold">Welcome to FitPrompt.</h1>
               <div className="text-center text-sm">
-                Don&apos;t have an account?
+                Don&apos;t have an account?{" "}
                 <Link to="/register" className="underline underline-offset-4">
                   Sign up
                 </Link>
@@ -70,23 +76,48 @@ export const Login = ({ className, ...props }) => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
+                  disabled={loading}
                 />
               </div>
 
               <div className="grid gap-3">
-                <PasswordInput setPassword={setPassword} password={password} />
+                <PasswordInput
+                  setPassword={setPassword}
+                  password={password}
+                  disabled={loading}
+                />
               </div>
 
-              <Button type="submit" className="w-full">
-                Login
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Signing in...
+                  </>
+                ) : (
+                  "Login"
+                )}
               </Button>
             </div>
           </div>
         </form>
 
-        <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
+        <div className="text-muted-foreground text-center text-xs text-balance">
           By clicking continue, you agree to our{" "}
-          <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+          <a
+            href="#"
+            className="underline underline-offset-4 hover:text-primary"
+          >
+            Terms of Service
+          </a>{" "}
+          and{" "}
+          <a
+            href="#"
+            className="underline underline-offset-4 hover:text-primary"
+          >
+            Privacy Policy
+          </a>
+          .
         </div>
       </div>
     </div>

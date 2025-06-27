@@ -4,14 +4,14 @@ import { useAuth } from "../context/AuthContext";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Button } from "../components/ui/button";
-import { Eye, EyeOff } from "lucide-react";
-import { PasswordInput } from "../components/custom/Password";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 
 export const Register = () => {
   const navigate = useNavigate();
   const { register } = useAuth();
 
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -26,9 +26,11 @@ export const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
 
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match");
+      setLoading(false);
       return;
     }
 
@@ -39,9 +41,12 @@ export const Register = () => {
         formData.email,
         formData.password
       );
-      navigate("/complete-profile");
+      // Using replace to prevent going back to registration page
+      navigate("/complete-profile", { replace: true });
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "Registration failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -67,6 +72,7 @@ export const Register = () => {
               value={formData.firstName}
               onChange={handleChange}
               required
+              disabled={loading}
               className="mt-2"
             />
           </div>
@@ -79,6 +85,7 @@ export const Register = () => {
               onChange={handleChange}
               className="mt-2"
               required
+              disabled={loading}
             />
           </div>
           <div>
@@ -91,11 +98,11 @@ export const Register = () => {
               onChange={handleChange}
               className="mt-2"
               required
+              disabled={loading}
             />
           </div>
           <div className="relative">
             <Label htmlFor="password">Password</Label>
-
             <Input
               id="password"
               name="password"
@@ -104,6 +111,7 @@ export const Register = () => {
               onChange={handleChange}
               required
               minLength={6}
+              disabled={loading}
               className="pr-10 mt-2"
             />
             <button
@@ -111,6 +119,7 @@ export const Register = () => {
               onClick={() => setShowPassword((prev) => !prev)}
               className="absolute right-2 top-[50%] text-muted-foreground"
               tabIndex={-1}
+              disabled={loading}
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
@@ -125,23 +134,31 @@ export const Register = () => {
               onChange={handleChange}
               required
               minLength={6}
+              disabled={loading}
               className="pr-10 mt-2"
             />
-
             <button
               type="button"
               onClick={() => setShowConfirm((prev) => !prev)}
               className="absolute right-2 top-[45%] text-muted-foreground"
               tabIndex={-1}
+              disabled={loading}
             >
               {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
-          <Button type="submit" className="w-full">
-            Register
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Creating Account...
+              </>
+            ) : (
+              "Register"
+            )}
           </Button>
           <p className="text-sm text-center text-muted-foreground">
-            Already have an account?
+            Already have an account?{" "}
             <Link
               to="/login"
               className="underline underline-offset-4 hover:text-primary"

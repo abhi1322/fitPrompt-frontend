@@ -25,9 +25,9 @@ const Navbar = ({ user }) => {
       <nav className="w-full z-50 flex h-15 justify-between items-center px-8 pt-16 md:px-36">
         <div>
           <h1>
-            <a href="/">
+            <Link to="/">
               <img src={Logo} alt="logo" className="w-30" />
-            </a>
+            </Link>
           </h1>
         </div>
 
@@ -53,7 +53,7 @@ const Navbar = ({ user }) => {
             <>
               {location.pathname != "/dashboard" ? (
                 <Button className="rounded-full px-6 text-sm">
-                  <a href="/dashboard">Dashboard</a>
+                  <Link to="/dashboard">Dashboard</Link>
                 </Button>
               ) : null}
 
