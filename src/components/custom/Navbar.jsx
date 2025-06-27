@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Logo from "../../assets/logo.png";
 
 const Navbar = ({ user }) => {
@@ -34,18 +34,20 @@ const Navbar = ({ user }) => {
         <div className="flex gap-2">
           {!user ? (
             <>
-              <Button
-                className="rounded-full "
-                onClick={() => navigate("/login")}
-              >
-                Login
-              </Button>
-              <Button
-                className="rounded-full bg-neutral-800 text-white px-6 text-sm"
-                onClick={() => navigate("/register")}
-              >
-                Sign Up
-              </Button>
+              <Link to="/login">
+                <Button
+                  className="rounded-full "
+                  onClick={() => navigate("/login")}
+                >
+                  Login
+                </Button>
+              </Link>
+
+              <Link to="/register">
+                <Button className="rounded-full bg-neutral-800 text-white px-6 text-sm">
+                  Sign Up
+                </Button>
+              </Link>
             </>
           ) : (
             <>
