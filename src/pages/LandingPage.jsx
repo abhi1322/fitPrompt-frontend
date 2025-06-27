@@ -10,7 +10,7 @@ import Arrow2 from "../assets/Arrow_2.svg";
 import QuateIcon from "../assets/qoutes.svg";
 import Avatars from "../assets/avatars.png";
 import { Button } from "../components/ui/button";
-import Illustration from "../assets/Illustration.png";
+import Illustration from "../assets/illustration.png";
 import Logo from "../assets/logo.png";
 import Insta from "../assets/insta.svg";
 import Facebook from "../assets/fb.svg";
