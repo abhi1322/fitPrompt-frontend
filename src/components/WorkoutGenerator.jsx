@@ -14,17 +14,21 @@ export const WorkoutGenerator = ({ user }) => {
     setLoading(true);
     setError("");
 
+    const API_KEY = import.meta.env.VITE_APP_RAPID_API_KEY;
+    const API_WORKOUT_URL = import.meta.env.VITE_APP_WORKOUT_URL;
+    const API_WORKOUT_HOST = import.meta.env.VITE_APP_WORKOUT_HOST;
+    const API_BACKEND_URL = import.meta.env.VITE_APP_BACKEND_URL;
+
     try {
       // Construct the prompt based on user's profile
       const prompt = generateWorkoutPrompt(user);
 
       const options = {
         method: "POST",
-        url: "https://free-gpt-api.p.rapidapi.com/v1/chat/completions",
+        url: API_WORKOUT_URL,
         headers: {
-          "x-rapidapi-key":
-            "dbf6408eadmshd81259e50dc8b54p115474jsn61e0097af264",
-          "x-rapidapi-host": "free-gpt-api.p.rapidapi.com",
+          "x-rapidapi-key": API_KEY,
+          "x-rapidapi-host": API_WORKOUT_HOST,
           "Content-Type": "application/json",
         },
         data: {
@@ -57,7 +61,7 @@ export const WorkoutGenerator = ({ user }) => {
 
           // Save workout plan to database
           const saveResponse = await fetch(
-            "http://localhost:5000/api/user/workout",
+            `${API_BACKEND_URL}/api/user/workout`,
             {
               method: "POST",
               headers: {

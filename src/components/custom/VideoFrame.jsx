@@ -6,9 +6,8 @@ import { Skeleton } from "../ui/skeleton";
 const VideoFrame = ({ exercise }) => {
   const [videoId, setVideoId] = useState("");
   const [error, setError] = useState("");
-  const API_KEY = import.meta.env.VITE_APP_YOUTUBE_DATA_V3_API_KEY;
-
-  console.log(exercise);
+  // console.log(exercise);
+  console.log(error);
 
   // useEffect(() => {
   //   const fetchVideo = async () => {
@@ -47,7 +46,8 @@ const VideoFrame = ({ exercise }) => {
   //   fetchVideo();
   // }, [exercise, API_KEY]);
 
-  const RAPID_API_KEY = import.meta.env.VITE_APP_RAPID_API_KEY;
+  const YOUTUBE_DATA_V3_API_KEY = import.meta.env
+    .VITE_APP_YOUTUBE_DATA_V3_API_KEY;
   useEffect(() => {
     const fetchVideo = async () => {
       if (!exercise) return;
@@ -61,7 +61,7 @@ const VideoFrame = ({ exercise }) => {
               maxResults: "1",
             },
             headers: {
-              "x-rapidapi-key": RAPID_API_KEY,
+              "x-rapidapi-key": YOUTUBE_DATA_V3_API_KEY,
               "x-rapidapi-host": "youtube-v3-alternative.p.rapidapi.com",
             },
           }

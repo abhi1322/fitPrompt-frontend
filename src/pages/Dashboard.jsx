@@ -41,7 +41,7 @@ export const Dashboard = () => {
         alt="blob-1"
         className="absolute -z-50 scale-200 opacity-20 left-[20%] top-[20%] blur-2xl"
       />
-      <div className="md:w-2/3 mx-auto mt-16 gap-6 justify-center flex flex-wrap">
+      <div className="md:w-2/3 flex-11/12  mx-auto mt-16 gap-6 justify-center flex flex-wrap">
         <div className="flex flex-col gap-4">
           <div className="bg-neutral-950 px-8 py-8 rounded-xl">
             <h2 className="font-bold text-2xl">
