@@ -1,5 +1,5 @@
-.group::before,
-.group::after {
+.group-button::before,
+.group-button::after {
   content: "";
   position: absolute;
   top: 0;
@@ -12,25 +12,25 @@
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-.group::before {
+.group-button::before {
   transform: scaleX(1.05);
   height: 50px;
   top: 19%;
   opacity: 0.3;
 }
 
-.group::after {
+.group-button::after {
   transform: scaleX(1.15);
   top: 15%;
   opacity: 0.15;
 }
 
 /* 🔥 Hover effect: scale down on hover */
-.group:hover::before {
+.group-button:hover::before {
   transform: scale(0.8);
 }
 
-.group:hover::after {
+.group-button:hover::after {
   transform: scale(0.8);
 }
 

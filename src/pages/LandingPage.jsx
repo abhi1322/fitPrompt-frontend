@@ -48,7 +48,7 @@ const LandingPage = () => {
           </p>
 
           <div className="mt-5 flex items-center gap-10">
-            <div className="relative inline-block group">
+            <div className="relative inline-block group-button">
               <a
                 href={isAuthenticated ? "/dashboard" : "/login"}
                 className="relative z-10 mt-4 bg-[#D55900] py-2 rounded-full flex w-[150px] gap-2 items-center justify-center text-sm text-black font-semibold hover:bg-amber-700 transition duration-300 ease-in-out"
@@ -165,7 +165,7 @@ const LandingPage = () => {
       </div>
 
       {/* Testimonial section */}
-      <div className="mt-20 overflow-hidden">
+      <div className="mt-20 bg-[] overflow-hidden">
         <h6 className="text-4xl font-semibold text-center">Testimonials</h6>
         <p className="text-xs mt-2 text-neutral-400 text-center">
           What people are saying about us.
@@ -175,8 +175,8 @@ const LandingPage = () => {
           {/* Add padding top to prevent quote icon clipping */}
           <div className="pt-8">
             {/* Gradient overlays for fade effect */}
-            <div className="absolute z-10 left-0 top-0 h-full w-32 bg-gradient-to-r from-black to-transparent" />
-            <div className="absolute z-10 right-0 top-0 h-full w-32 bg-gradient-to-l from-black to-transparent" />
+            <div className="absolute z-10 left-0 top-0 h-full w-32 bg-gradient-to-r from-[#070707] to-transparent" />
+            <div className="absolute z-10 right-0 top-0 h-full w-32 bg-gradient-to-l from-[#070707] to-transparent" />
 
             {/* Infinite scroll container */}
             <div className="flex gap-4 animate-scroll">
@@ -258,7 +258,7 @@ const LandingPage = () => {
         <p className="mt-2 text-xs text-neutral-400">
           {LandingContent.ctaSection.subheadline}
         </p>
-        <Button className="rounded-full bg-[#BB4D00] mt-4">
+        <Button className="rounded-full bg-[#BB4D00] mt-4 ">
           <Link
             className="flex gap-2 items-center justify-center"
             to={isAuthenticated ? "/dashboard" : "/login"}
@@ -270,7 +270,7 @@ const LandingPage = () => {
       </div>
 
       {/* Mission sections */}
-      <div className="w-full mt-20 lg:w-3/6 lg:mb-20 justify-between gap-20 mx-auto flex flex-col lg:flex-row items-center">
+      <div className="w-full  mt-20 mb-20 lg:w-3/6 lg:mb-20 justify-between gap-20 mx-auto flex flex-col lg:flex-row items-center">
         <div>
           <h6 className="text-center lg:text-left text-5xl">Our Mission</h6>
           <p className="text-center lg:text-left text-xs text-neutral-400 mt-4 w-[400px] ">
