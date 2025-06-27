@@ -13,6 +13,7 @@ import { Dashboard } from "./pages/Dashboard";
 import LandingPage from "./pages/LandingPage";
 import "./App.css";
 import { useEffect } from "react";
+import Error404Page from "./pages/Error404Page";
 
 // Wrapper component for public routes (login/register)
 const PublicRoute = ({ children }) => {
@@ -63,6 +64,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="*" element={<Error404Page />} />
         </Routes>
       </AuthProvider>
     </Router>

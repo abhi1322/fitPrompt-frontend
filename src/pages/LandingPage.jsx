@@ -21,7 +21,7 @@ const LandingPage = () => {
   const { isAuthenticated, user } = useAuth();
 
   return (
-    <div className=" text-white font-[Poppins] flex flex-col md:min-h-screen w-full pt-4">
+    <div className=" text-white font-[Poppins] flex flex-col md:min-h-screen w-full pt-4 overflow-x-hidden">
       <Navbar user={user} />
       {/* hero section */}
       <div className="relative w-full md:w-4/5 h-full mx-auto  lg:mt-40 lg:mb-80">
