@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { GalleryVerticalEnd } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -36,21 +36,21 @@ export const Login = ({ className, ...props }) => {
         <form onSubmit={handleSubmit}>
           <div className="flex flex-col gap-6">
             <div className="flex flex-col items-center gap-2">
-              <a
-                href="/"
+              <Link
+                to="/"
                 className="flex flex-col items-center gap-2 font-medium"
               >
                 <div className="flex  items-center justify-center rounded-md">
                   <img src={Logo} alt="logo" />
                 </div>
                 <span className="sr-only">Fitprompt.</span>
-              </a>
+              </Link>
               <h1 className="text-xl font-bold">Welcome to FitPrompt.</h1>
               <div className="text-center text-sm">
                 Don&apos;t have an account?
-                <a href="/register" className="underline underline-offset-4">
+                <Link to="/register" className="underline underline-offset-4">
                   Sign up
-                </a>
+                </Link>
               </div>
             </div>
 
