@@ -1,4 +1,3 @@
-import React, { useReducer } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Navbar from "../components/custom/Navbar";
@@ -22,20 +21,24 @@ const LandingPage = () => {
   const { isAuthenticated, user } = useAuth();
 
   return (
-    <div className="font-[Poppins] flex flex-col min-h-screen w-full -z-40 pt-4">
+    <div className=" font-[Poppins] flex flex-col md:min-h-screen w-full pt-4">
       <Navbar user={user} />
       {/* hero section */}
-      <div className="w-4/5 h-full mx-auto relative mt-40 mb-80">
-        <div className="absolute -top-[100%] -right-[10%] bottom-0 -z-10">
-          <img src={HeroImg} alt="" className="h-screen" />
-        </div>
-        <div className="">
-          <h2 className="font-bold text-5xl bg-gradient-to-b from-[#FFFFFF] to-[#555555] bg-clip-text text-transparent">
-      
+      <div className="relative w-full md:w-4/5 h-full mx-auto  lg:mt-40 lg:mb-80">
+        {/* hero img for small devices */}
+        <img src={HeroImg} alt="hero-img" className="lg:hidden -z-50 -mb-20" />
+        <img
+          src={HeroImg}
+          alt=""
+          className="hidden lg:flex absolute top-[80%] left-[72%] translate-x-[-50%] translate-y-[-50%] -z-50"
+        />
+
+        <div className="px-10 relative pt-20 ">
+          <h2 className="font-bold text-[1.5rem] md:text-5xl bg-gradient-to-b from-[#FFFFFF] to-[#555555] bg-clip-text text-transparent">
             Achieve Your Fitness Goals with
           </h2>
           <h2
-            className="relative  font-bold text-5xl bg-gradient-to-b from-[#FFFFFF] to-[#555555] bg-clip-text text-transparent "
+            className="relative font-bold text-[1.6rem] md:text-5xl bg-gradient-to-b from-[#FFFFFF] to-[#555555] bg-clip-text text-transparent "
             data-text="AI-Powered Workout Plans"
           >
             AI-Powered Workout Plans
@@ -61,16 +64,18 @@ const LandingPage = () => {
             </button>
           </div>
         </div>
+        {/* hero img for large devices */}
       </div>
 
       {/* features section */}
-      <div className="flex justify-center items-center flex-col">
+      <div className="flex mt-40 lg:mt-0 justify-center items-center flex-col">
         <h6 className="text-4xl font-semibold">How it Works</h6>
         <p className="text-xs mt-2 text-neutral-400">
           Generate your personalize plan by completing 3 steps.
         </p>
+        {/* display on large screen */}
 
-        <div className="relative mt-24 mb-20 flex gap-8">
+        <div className="relative hidden lg:flex mt-24 mb-20 gap-8">
           <img
             src={Arrow1}
             alt="Arrow one"
@@ -80,6 +85,50 @@ const LandingPage = () => {
             src={Arrow2}
             alt="Arrow two"
             className="absolute -bottom-[20%] scale-75 right-[15%]  hover:rotate-3 transition-all ease-in-out duration-300"
+          />
+          <div className="bg-[#111111] hover:bg-[#121212] transition-all ease-in-out duration-300 hover:rotate-3 p-4 w-[280px] rounded-xl">
+            <h6 className="text-2xl font-semibold text-[#ec6504]">Step 1</h6>
+            <p className="mt-4 font-semibold leading-[18px]">
+              Create <br />
+              Your Profile
+            </p>
+            <p className="text-xs mt-2 text-neutral-400">
+              Tell us your fitness level, goals, and training preferences.
+            </p>
+          </div>
+          <div className="bg-[#111111]  hover:bg-[#121212] transition-all ease-in-out duration-300 hover:-rotate-3 p-4 w-[280px] rounded-xl">
+            <h6 className="text-2xl font-semibold text-[#D55900]">Step 2</h6>
+            <p className="mt-4 font-semibold leading-[18px]">
+              Generate <br />
+              Your Plan
+            </p>
+            <p className="text-xs mt-2 text-neutral-400">
+              Our AI crafts a weekly workout schedule tailored to your body.
+            </p>
+          </div>
+          <div className="bg-[#D55900] p-4 w-[280px] rounded-xl  hover:bg-[#d55900e7] transition-all ease-in-out duration-300 hover:rotate-3">
+            <h6 className="text-2xl font-semibold text-white">Step 3</h6>
+            <p className="mt-4 font-semibold leading-[18px] text-black">
+              Track &
+              <br />
+              Improve
+            </p>
+            <p className="text-xs mt-2 text-neutral-800">
+              Log workouts, adjust focus areas, and progress over time.
+            </p>
+          </div>
+        </div>
+        {/* Display on small and medium screens  */}
+        <div className="relative flex flex-col lg:hidden mt-24 mb-20 gap-8">
+          <img
+            src={Arrow1}
+            alt="Arrow one"
+            className="absolute top-[30%] scale-90 lg:scale-75 -right-[50%] rotate-90  hover:-rotate-3 transition-all ease-in-out duration-300"
+          />
+          <img
+            src={Arrow2}
+            alt="Arrow two"
+            className="absolute bottom-[30%] scale-90 lg:scale-75 -left-[55%] rotate-90  hover:rotate-3 transition-all ease-in-out duration-300"
           />
           <div className="bg-[#111111] hover:bg-[#121212] transition-all ease-in-out duration-300 hover:rotate-3 p-4 w-[280px] rounded-xl">
             <h6 className="text-2xl font-semibold text-[#ec6504]">Step 1</h6>
@@ -200,7 +249,7 @@ const LandingPage = () => {
       </div>
 
       {/* CTA section */}
-      <div className="flex my-16  flex-col items-center justify-center">
+      <div className="flex lg:my-16 mt-20 flex-col items-center justify-center">
         <h6 className="text-4xl text-[#F8501B] text-center">
           <span className="text-white">Ready to Transform Your</span>
           <br />
@@ -221,25 +270,29 @@ const LandingPage = () => {
       </div>
 
       {/* Mission sections */}
-      <div className="w-4/6 mb-20 gap-20 mx-auto flex items-center">
+      <div className="w-full mt-20 lg:w-3/6 lg:mb-20 justify-between gap-20 mx-auto flex flex-col lg:flex-row items-center">
         <div>
-          <h6 className="text-5xl">Our Mission</h6>
-          <p className="text-xs text-neutral-400 mt-4 w-[400px] ">
+          <h6 className="text-center lg:text-left text-5xl">Our Mission</h6>
+          <p className="text-center lg:text-left text-xs text-neutral-400 mt-4 w-[400px] ">
             We're a team of developers, trainers, and AI engineers on a mission
             to make fitness accessible, personalized, and effective for
             everyone. No gym? No problem. We help you stay fit – anytime,
             anywhere.
           </p>
         </div>
-        <img src={Illustration} alt="illustration" className="w-[50vh]" />
+        <img
+          src={Illustration}
+          alt="illustration"
+          className="w-[80vw] md:[60vw] lg:w-[50vw]"
+        />
       </div>
 
       {/* footer */}
       <div className="bg-[#111111]">
-        <div className="w-4/6 mx-auto mt-8 flex  justify-between items-start">
+        <div className="w-full md:w-4/6  md:mx-auto mt-8 flex flex-col md:flex-row gap-5 justify-center md:justify-between items-center md:items-start">
           <img src={Logo} className="w-30 " alt="logo" />
           <div>
-            <ul className="text-xs flex flex-col gap-1 text-neutral-400">
+            <ul className="w-fit text-xs flex flex-col items-center gap-1 text-neutral-400">
               <li>
                 <a href="/">About us</a>
               </li>

@@ -22,7 +22,7 @@ const Navbar = ({ user }) => {
 
   return (
     <>
-      <nav className="w-full flex h-15 justify-between items-center px-36">
+      <nav className="w-full z-50 flex h-15 justify-between items-center px-8 pt-16 md:px-36">
         <div>
           <h1>
             <a href="/">
