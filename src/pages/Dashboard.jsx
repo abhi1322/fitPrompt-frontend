@@ -46,8 +46,8 @@ export const Dashboard = () => {
         <div className="flex flex-col gap-4">
           <div className="bg-neutral-950 px-8 py-8 rounded-xl">
             <h2 className="font-bold text-2xl">
-              Welcome back,
-              <span className="text-yellow-500">{user?.firstName}! </span>
+              Welcome,
+              <span className="text-yellow-500"> {user?.firstName}! </span>
             </h2>
             <p className="text-[12px] text-white/50 mt-2 font-light">
               Let’s crush your goals today. Consistency builds results. 💪

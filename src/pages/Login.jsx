@@ -6,31 +6,95 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { PasswordInput } from "../components/custom/Password";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "../components/ui/alert";
+import { z } from "zod";
 import Logo from "../assets/logo.png";
 
+// Zod validation schema
+const loginSchema = z.object({
+  email: z
+    .string()
+    .min(1, "Email is required")
+    .email("Please enter a valid email address")
+    .max(254, "Email is too long"),
+  password: z
+    .string()
+    .min(1, "Password is required")
+    .min(6, "Password must be at least 6 characters long")
+    .max(128, "Password is too long"),
+});
+
 export const Login = ({ className, ...props }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [touched, setTouched] = useState({});
   const navigate = useNavigate();
   const { login } = useAuth();
 
+  const validateField = (field, value) => {
+    try {
+      loginSchema.pick({ [field]: true }).parse({ [field]: value });
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        setErrors((prev) => ({
+          ...prev,
+          [field]: error.errors[0].message,
+        }));
+      }
+    }
+  };
+
+  const handleChange = (field, value) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+
+    // Real-time validation for touched fields
+    if (touched[field]) {
+      validateField(field, value);
+    }
+  };
+
+  const handleBlur = (field) => {
+    setTouched((prev) => ({ ...prev, [field]: true }));
+    validateField(field, formData[field]);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
     setLoading(true);
 
     try {
-      const { user } = await login(email, password);
+      // Validate entire form
+      loginSchema.parse(formData);
+      setErrors({});
+
+      const { user } = await login(formData.email, formData.password);
       if (!user.profileCompleted) {
         navigate("/complete-profile", { replace: true });
       } else {
         navigate("/dashboard", { replace: true });
       }
-    } catch (err) {
-      setError(err.message || "Login failed. Please try again.");
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const fieldErrors = {};
+        error.errors.forEach((err) => {
+          fieldErrors[err.path[0]] = err.message;
+        });
+        setErrors(fieldErrors);
+      } else {
+        setErrors({
+          submit: error.message || "Login failed. Please try again.",
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -60,32 +124,48 @@ export const Login = ({ className, ...props }) => {
               </div>
             </div>
 
-            {error && (
-              <p className="text-sm text-red-500 text-center font-medium">
-                {error}
-              </p>
+            {errors.submit && (
+              <Alert className="border-red-200 bg-red-50">
+                <AlertCircle className="h-4 w-4 text-red-600" />
+                <AlertDescription className="text-red-600">
+                  {errors.submit}
+                </AlertDescription>
+              </Alert>
             )}
 
             <div className="flex flex-col gap-6">
-              <div className="grid gap-3">
+              <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   type="email"
                   placeholder="m@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
+                  value={formData.email}
+                  onChange={(e) => handleChange("email", e.target.value)}
+                  onBlur={() => handleBlur("email")}
+                  className={
+                    errors.email ? "border-red-500 focus:border-red-500" : ""
+                  }
                   disabled={loading}
                 />
+                {errors.email && (
+                  <p className="text-sm text-red-500">{errors.email}</p>
+                )}
               </div>
 
-              <div className="grid gap-3">
+              <div className="grid gap-2">
                 <PasswordInput
-                  setPassword={setPassword}
-                  password={password}
+                  password={formData.password}
+                  setPassword={(value) => handleChange("password", value)}
+                  onBlur={() => handleBlur("password")}
+                  className={
+                    errors.password ? "border-red-500 focus:border-red-500" : ""
+                  }
                   disabled={loading}
                 />
+                {errors.password && (
+                  <p className="text-sm text-red-500">{errors.password}</p>
+                )}
               </div>
 
               <Button type="submit" className="w-full" disabled={loading}>

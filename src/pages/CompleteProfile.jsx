@@ -104,7 +104,7 @@ export const CompleteProfile = () => {
       }
     };
     fetchUserData();
-  }, [token]);
+  }, [token, API_BACKEND_URL, formData]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
